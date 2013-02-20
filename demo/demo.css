@@ -1,0 +1,20 @@
+ul.content {
+  width: 100%;
+}
+
+ul.content li {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+ul.content li h1 {
+  color: rgba(0,0,0,0.4);
+  font-size: 50px;
+  padding-top: 20px;
+  text-align: center;
+}
+
+ul.content li.first { background: #333; }
+ul.content li.second { background: #666; }
+ul.content li.third { background: #999; }
