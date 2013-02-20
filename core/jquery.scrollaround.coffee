@@ -2,7 +2,7 @@
   pluginName = "snapscroll"
   defaults =
     scrollSpeed: 300
-    scrollOffset: 50
+    scrollEndSpeed: 100
 
   Plugin = (element, options) ->
     @container = $(element)
@@ -15,58 +15,65 @@
 
     scrollInit: ->
       sa = @
-      scroll_speed = @options.scrollSpeed
-      scroll_offset = @options.scrollOffset
       $children = @container.children()
 
+      scroll_speed = @options.scrollSpeed
+      scroll_end_speed = @options.scrollEndSpeed
       prev_position = $(document).scrollTop()
-      end_scroll = false
       timer = null
-      
-      # The scroll event
-      $(window).on "scroll.snapscroll", ->
-        cur_position = $(document).scrollTop()
-        
-        # Always clear the timeout on new scroll
-        clearTimeout timer
 
-        unless end_scroll
-          # If this is not a double auto scroll...
+      end_scroll = false
+      autoscrolling = false
+      
+
+      $(window).on "scroll.snapscroll", ->
+        if !autoscrolling
+          cur_position = $(document).scrollTop()
           direction = sa.getDirection(prev_position, cur_position)
           $child = sa.getTargetChild($children, direction, cur_position)
+          
+          # Always clear the timeout on new scroll
+          clearTimeout timer
 
           timer = setTimeout ->
-            $(window).scrollTo $child, scroll_speed
+            $(window).scrollTo($child, scroll_speed)
+
+            # Prevent scrollTo from calling itself
+            autoscrolling = true
             setTimeout ->
-              
-              # Prevent double auto-scroll
-              end_scroll = true
-            , scroll_speed
-          , scroll_offset
-        else
-          # Allow auto-scrolling again
-          end_scroll = false
-        
-        # For detecting direction
-        prev_position = cur_position
+              prev_position = $(document).scrollTop()
+              autoscrolling = false
+            , scroll_speed + 20
+
+          , scroll_end_speed
+
+          prev_position = cur_position
 
 
     getDirection: (a, b) ->
       if a > b then "up" else "down"
 
     getTargetChild: ($children, direction, position) ->
-      window_height = $children.first().height()
-      window_half = window_height / 2
+      window_height = $(window).height()
+      bottom_position = position + window_height
+      snap_padding = 20
+      fc_offset = $children.first().offset().top
+      lc_offset = $children.last().offset().top + window_height
       $target = null
 
-      $children.each ->
-        offsetY = $(this).offset().top
-        if direction is "up"
-          $target = $(this) if offsetY < position and position < offsetY + window_height
-        else
-          $target = $(this) if offsetY < position + window_height and position < offsetY
+      if position + snap_padding > fc_offset and bottom_position - snap_padding < lc_offset
+        $children.each (i) ->
+          object_offset = $(this).offset().top
 
-      $target
+          if direction is "down"
+            if bottom_position > object_offset
+              $target = $(this)
+          else
+            if position < object_offset + window_height
+              $target = $(this)
+              return false
+
+      return $target
 
   $.fn[pluginName] = (options) ->
     @each ->

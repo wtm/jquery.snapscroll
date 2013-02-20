@@ -6,7 +6,7 @@
     pluginName = "snapscroll";
     defaults = {
       scrollSpeed: 300,
-      scrollOffset: 50
+      scrollEndSpeed: 100
     };
     Plugin = function(element, options) {
       this.container = $(element);
@@ -18,31 +18,32 @@
         return this.scrollInit();
       },
       scrollInit: function() {
-        var $children, end_scroll, prev_position, sa, scroll_offset, scroll_speed, timer;
+        var $children, autoscrolling, end_scroll, prev_position, sa, scroll_end_speed, scroll_speed, timer;
         sa = this;
-        scroll_speed = this.options.scrollSpeed;
-        scroll_offset = this.options.scrollOffset;
         $children = this.container.children();
+        scroll_speed = this.options.scrollSpeed;
+        scroll_end_speed = this.options.scrollEndSpeed;
         prev_position = $(document).scrollTop();
-        end_scroll = false;
         timer = null;
+        end_scroll = false;
+        autoscrolling = false;
         return $(window).on("scroll.snapscroll", function() {
           var $child, cur_position, direction;
-          cur_position = $(document).scrollTop();
-          clearTimeout(timer);
-          if (!end_scroll) {
+          if (!autoscrolling) {
+            cur_position = $(document).scrollTop();
             direction = sa.getDirection(prev_position, cur_position);
             $child = sa.getTargetChild($children, direction, cur_position);
+            clearTimeout(timer);
             timer = setTimeout(function() {
               $(window).scrollTo($child, scroll_speed);
+              autoscrolling = true;
               return setTimeout(function() {
-                return end_scroll = true;
-              }, scroll_speed);
-            }, scroll_offset);
-          } else {
-            end_scroll = false;
+                prev_position = $(document).scrollTop();
+                return autoscrolling = false;
+              }, scroll_speed + 20);
+            }, scroll_end_speed);
+            return prev_position = cur_position;
           }
-          return prev_position = cur_position;
         });
       },
       getDirection: function(a, b) {
@@ -53,23 +54,29 @@
         }
       },
       getTargetChild: function($children, direction, position) {
-        var $target, window_half, window_height;
-        window_height = $children.first().height();
-        window_half = window_height / 2;
+        var $target, bottom_position, fc_offset, lc_offset, snap_padding, window_height;
+        window_height = $(window).height();
+        bottom_position = position + window_height;
+        snap_padding = 20;
+        fc_offset = $children.first().offset().top;
+        lc_offset = $children.last().offset().top + window_height;
         $target = null;
-        $children.each(function() {
-          var offsetY;
-          offsetY = $(this).offset().top;
-          if (direction === "up") {
-            if (offsetY < position && position < offsetY + window_height) {
-              return $target = $(this);
+        if (position + snap_padding > fc_offset && bottom_position - snap_padding < lc_offset) {
+          $children.each(function(i) {
+            var object_offset;
+            object_offset = $(this).offset().top;
+            if (direction === "down") {
+              if (bottom_position > object_offset) {
+                return $target = $(this);
+              }
+            } else {
+              if (position < object_offset + window_height) {
+                $target = $(this);
+                return false;
+              }
             }
-          } else {
-            if (offsetY < position + window_height && position < offsetY) {
-              return $target = $(this);
-            }
-          }
-        });
+          });
+        }
         return $target;
       }
     };
