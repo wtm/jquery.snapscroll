@@ -1,0 +1,35 @@
+ul.content {
+  margin-top: 70px;
+  width: 100%;
+}
+
+ul.content li {
+  display: block;
+  height: 100%;
+  width: 100%;
+}
+
+ul.content li h1 {
+  color: rgba(255,255,255,0.4);
+  font-size: 50px;
+  padding-top: 20px;
+  text-align: center;
+}
+
+.scroller {
+  background: #CCC;
+  box-shadow: inset 0 0 5px 0 black;
+  height: 1px;
+  overflow: hidden;
+}
+
+.scroller h3 {
+  color: rgba(0,0,0,0.3);
+  font-size: 30px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+ul.content li.first { background: url('../images/dirty_old_shirt.png'); }
+ul.content li.second { background: url('../images/navy_blue.png'); }
+ul.content li.third { background: url('../images/asfalt.png'); }

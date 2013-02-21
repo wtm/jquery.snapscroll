@@ -14,23 +14,19 @@
       @snapping()
 
     snapping: ->
-      sa = @
       $children = @container.children()
 
       scroll_speed = @options.scrollSpeed
       scroll_end_speed = @options.scrollEndSpeed
       prev_position = $(document).scrollTop()
       timer = null
-
-      end_scroll = false
       autoscrolling = false
       
-
-      $(window).on "scroll.snapscroll", ->
+      $(window).on "scroll.snapscroll", =>
         if !autoscrolling
           cur_position = $(document).scrollTop()
-          direction = sa.getDirection(prev_position, cur_position)
-          $child = sa.getTargetChild($children, direction, cur_position)
+          direction = @getDirection(prev_position, cur_position)
+          $child = @getTargetChild($children, direction, cur_position)
           
           # Always clear the timeout on new scroll
           clearTimeout timer
@@ -77,6 +73,6 @@
 
   $.fn[pluginName] = (options) ->
     @each ->
-      $.data this, "plugin_" + pluginName, new Plugin(this, options)  unless $.data(this, "plugin_" + pluginName)
+      $.data this, "plugin_" + pluginName, new Plugin(this, options) unless $.data(this, "plugin_" + pluginName)
 
 ) jQuery, window, document

@@ -18,21 +18,20 @@
         return this.snapping();
       },
       snapping: function() {
-        var $children, autoscrolling, end_scroll, prev_position, sa, scroll_end_speed, scroll_speed, timer;
-        sa = this;
+        var $children, autoscrolling, prev_position, scroll_end_speed, scroll_speed, timer,
+          _this = this;
         $children = this.container.children();
         scroll_speed = this.options.scrollSpeed;
         scroll_end_speed = this.options.scrollEndSpeed;
         prev_position = $(document).scrollTop();
         timer = null;
-        end_scroll = false;
         autoscrolling = false;
         return $(window).on("scroll.snapscroll", function() {
           var $child, cur_position, direction;
           if (!autoscrolling) {
             cur_position = $(document).scrollTop();
-            direction = sa.getDirection(prev_position, cur_position);
-            $child = sa.getTargetChild($children, direction, cur_position);
+            direction = _this.getDirection(prev_position, cur_position);
+            $child = _this.getTargetChild($children, direction, cur_position);
             clearTimeout(timer);
             timer = setTimeout(function() {
               $(window).scrollTo($child, scroll_speed);
