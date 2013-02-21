@@ -15,9 +15,49 @@
     };
     Plugin.prototype = {
       init: function() {
-        return this.scrollInit();
+        this.snapping();
+        return this.elastic();
       },
-      scrollInit: function() {
+      elastic: function() {
+        var $scroller, default_easing, easing, elastic_end_speed, elastic_scroll_speed, link_opened, prev_position, sa, window_half, window_height;
+        sa = this;
+        $scroller = $('.scroller');
+        window_height = $(window).height();
+        window_half = window_height / 2;
+        prev_position = $(document).scrollTop();
+        elastic_scroll_speed = 100;
+        elastic_end_speed = 200;
+        easing = default_easing = 1;
+        link_opened = false;
+        return $(window).on("scroll.elastic", function() {
+          var bottom_position, cur_position, direction, doc_height, scroll_ended;
+          cur_position = $(document).scrollTop();
+          bottom_position = cur_position + $(window).height();
+          direction = sa.getDirection(prev_position, cur_position);
+          doc_height = $(document).height();
+          scroll_ended = false;
+          if (bottom_position > doc_height - $scroller.height() - 40) {
+            easing = easing * 2;
+            if (direction === "down") {
+              if (bottom_position >= $scroller.offset().top + window_half && !link_opened) {
+                link_opened = true;
+                window.open($scroller.data("url"), "_self");
+              } else {
+                $scroller.css({
+                  height: "+=" + easing + "px"
+                });
+              }
+            } else {
+              easing = default_easing;
+              $scroller.css({
+                height: "0px"
+              });
+            }
+          }
+          return prev_position = cur_position;
+        });
+      },
+      snapping: function() {
         var $children, autoscrolling, end_scroll, prev_position, sa, scroll_end_speed, scroll_speed, timer;
         sa = this;
         $children = this.container.children();
@@ -27,7 +67,7 @@
         timer = null;
         end_scroll = false;
         autoscrolling = false;
-        return $(window).on("scroll.snapscroll", function() {
+        return $(window).on("scroll.snap", function() {
           var $child, cur_position, direction;
           if (!autoscrolling) {
             cur_position = $(document).scrollTop();
