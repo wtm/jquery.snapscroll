@@ -1,4 +1,5 @@
 ul.content {
+  margin-top: 70px;
   width: 100%;
 }
 
@@ -9,7 +10,7 @@ ul.content li {
 }
 
 ul.content li h1 {
-  color: rgba(0,0,0,0.4);
+  color: rgba(255,255,255,0.4);
   font-size: 50px;
   padding-top: 20px;
   text-align: center;
@@ -29,6 +30,6 @@ ul.content li h1 {
   text-align: center;
 }
 
-ul.content li.first { background: #333; }
-ul.content li.second { background: #666; }
-ul.content li.third { background: #999; }
+ul.content li.first { background: url('images/dirty_old_shirt.png'); }
+ul.content li.second { background: url('images/navy_blue.png'); }
+ul.content li.third { background: url('images/asfalt.png'); }

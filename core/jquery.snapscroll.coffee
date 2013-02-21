@@ -12,41 +12,6 @@
   Plugin:: =
     init: ->
       @snapping()
-      @elastic()
-
-    elastic: ->
-      sa = @
-      $scroller = $('.scroller')
-      window_height = $(window).height();
-      window_half =  window_height / 2;
-      prev_position = $(document).scrollTop()
-      elastic_scroll_speed = 100
-      elastic_end_speed = 200
-      easing = default_easing = 1
-      link_opened = false
-
-      $(window).on "scroll.elastic", ->
-        cur_position = $(document).scrollTop()
-        bottom_position = cur_position + $(window).height()
-        direction = sa.getDirection(prev_position, cur_position)
-        doc_height = $(document).height()
-        scroll_ended = false
-
-        if bottom_position > doc_height - $scroller.height() - 40
-          easing = easing * 2;
-
-          if direction is "down"
-
-            if bottom_position >= $scroller.offset().top + window_half && !link_opened
-              link_opened = true
-              window.open($scroller.data("url"), "_self")
-            else
-              $scroller.css({height: "+="+easing+"px"})
-          else
-            easing = default_easing
-            $scroller.css({height: "0px"})
-
-        prev_position = cur_position
 
     snapping: ->
       sa = @
@@ -61,7 +26,7 @@
       autoscrolling = false
       
 
-      $(window).on "scroll.snap", ->
+      $(window).on "scroll.snapscroll", ->
         if !autoscrolling
           cur_position = $(document).scrollTop()
           direction = sa.getDirection(prev_position, cur_position)
@@ -96,7 +61,7 @@
       lc_offset = $children.last().offset().top + window_height
       $target = null
 
-      if position + snap_padding > fc_offset and bottom_position - snap_padding < lc_offset
+      if position + snap_padding > fc_offset and bottom_position < lc_offset
         $children.each (i) ->
           object_offset = $(this).offset().top
 
