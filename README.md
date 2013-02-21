@@ -23,7 +23,7 @@ A big thanks to all of our [contributors](https://github.com/wtm/jquery.snapscro
 
 ![we the media](http://wtmworldwide.com/wtm.png)
 
-Shapeshift is maintained by [We The Media, inc.](http://wtmworldwide.com/)
+SnapScroll is maintained by [We The Media, inc.](http://wtmworldwide.com/)
 
 ## Sites Using SnapScroll
 
@@ -33,7 +33,7 @@ Got a project that you are using SnapScroll on? Let us know and we will happily 
 
 ### Dependencies
 
-Shapeshift requires the latest version of jQuery, and the [scroll_to](http://flesler.blogspot.com/2007/10/jqueryscrollto.html) jquery plugin by Ariel Flesler.
+Shapeshift requires the latest version of jQuery, and the [scroll_to](http://flesler.blogspot.com/2007/10/jqueryscrollto.html) jquery plugin by Ariel Flesler which is included in the core folder.
 
 ### Setting Up
 
