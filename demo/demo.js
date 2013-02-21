@@ -1,3 +1,0 @@
-$(function() {
-  $("ul.content").snapscroll();
-});
