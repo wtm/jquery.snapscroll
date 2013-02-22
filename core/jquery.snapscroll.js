@@ -5,6 +5,8 @@
     var Plugin, defaults, pluginName;
     pluginName = "snapscroll";
     defaults = {
+      botPadding: 40,
+      topPadding: 40,
       scrollSpeed: 300,
       scrollEndSpeed: 100
     };
@@ -32,15 +34,19 @@
             cur_position = $(document).scrollTop();
             direction = _this.getDirection(prev_position, cur_position);
             $child = _this.getTargetChild($children, direction, cur_position);
-            clearTimeout(timer);
-            timer = setTimeout(function() {
-              $(window).scrollTo($child, scroll_speed);
-              autoscrolling = true;
-              return setTimeout(function() {
-                prev_position = $(document).scrollTop();
-                return autoscrolling = false;
-              }, scroll_speed + 20);
-            }, scroll_end_speed);
+            if ($child) {
+              clearTimeout(timer);
+              timer = setTimeout(function() {
+                $(window).scrollTo($child, scroll_speed);
+                $child.siblings(".ss-active").removeClass("ss-active");
+                $child.addClass("ss-active");
+                autoscrolling = true;
+                return setTimeout(function() {
+                  prev_position = $(document).scrollTop();
+                  return autoscrolling = false;
+                }, scroll_speed + 20);
+              }, scroll_end_speed);
+            }
             return prev_position = cur_position;
           }
         });
@@ -53,25 +59,26 @@
         }
       },
       getTargetChild: function($children, direction, position) {
-        var $target, bottom_position, fc_offset, lc_offset, snap_padding, window_height;
+        var $target, bottom_position, fc_top, lc_bottom, options, window_height;
+        options = this.options;
         window_height = $(window).height();
         bottom_position = position + window_height;
-        snap_padding = 20;
-        fc_offset = $children.first().offset().top;
-        lc_offset = $children.last().offset().top + window_height;
+        fc_top = $children.first().offset().top;
+        lc_bottom = $children.last().offset().top + window_height;
         $target = null;
-        if (position + snap_padding > fc_offset && bottom_position < lc_offset) {
-          $children.each(function(i) {
-            var object_offset;
-            object_offset = $(this).offset().top;
+        if (fc_top < position + options.topPadding) {
+          $children.not(".ss-active").each(function(i) {
+            var object_bot, object_top;
+            object_top = $(this).offset().top;
+            object_bot = object_top + $(this).height();
             if (direction === "down") {
-              if (bottom_position > object_offset) {
-                return $target = $(this);
-              }
-            } else {
-              if (position < object_offset + window_height) {
+              if (object_top < bottom_position && object_bot > position) {
                 $target = $(this);
                 return false;
+              }
+            } else {
+              if (object_top < position && position < object_bot) {
+                return $target = $(this);
               }
             }
           });
