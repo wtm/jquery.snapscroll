@@ -23,13 +23,13 @@
       prev_position = $(document).scrollTop()
       timer = null
       autoscrolling = false
-      
-      $(window).on "scroll.snapscroll", =>
+
+      $(window).off("scroll.snapscroll").on  "scroll.snapscroll", =>
         if !autoscrolling
           cur_position = $(document).scrollTop()
           direction = @getDirection(prev_position, cur_position)
           $child = @getTargetChild($children, direction, cur_position)
-          
+
           # Always clear the timeout on new scroll
           if $child
             clearTimeout timer
@@ -72,7 +72,7 @@
               $target = $(this)
               return false
           else
-            if object_top < position and position < object_bot 
+            if object_top < position and position < object_bot
               $target = $(this)
 
       return $target
