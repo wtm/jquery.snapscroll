@@ -36,10 +36,10 @@
           if ($child) {
             clearTimeout(timer);
             timer = setTimeout(function() {
-              $(window).trigger('snapscrollBefore').scrollTo($child, {
+              $(window).trigger('snapscrollBefore', $child).scrollTo($child, {
                 'duration': scroll_speed,
                 'onAfter': function() {
-                  $(window).trigger('snapscrollAfter');
+                  $(window).trigger('snapscrollAfter', $child);
                 }
               });
               $child.siblings(".ss-active").removeClass("ss-active");
