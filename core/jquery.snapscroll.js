@@ -36,7 +36,12 @@
           if ($child) {
             clearTimeout(timer);
             timer = setTimeout(function() {
-              $(window).scrollTo($child, scroll_speed);
+              $(window).trigger('snapscrollBefore').scrollTo($child, {
+                'duration': scroll_speed,
+                'onAfter': function() {
+                  $(window).trigger('snapscrollAfter');
+                }
+              });
               $child.siblings(".ss-active").removeClass("ss-active");
               $child.addClass("ss-active");
               autoscrolling = true;
